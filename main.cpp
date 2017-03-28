@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <fstream>
 #include <time.h>
+#include <string.h>
 void ConfigureConsoleWindow ()
 {
     void* handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -23,6 +24,10 @@ void Center (std::string Stroke)
 			std::cout << " ";
     std::cout << Stroke;
 } // Функция для размещения введенного нами текста по центру экрана.
+void cls ()
+{
+	system ("cls");
+}
 char Getch (std::string Menu)
 {
 	unsigned short int Button = 0;
@@ -41,36 +46,43 @@ char Getch (std::string Menu)
 			}
 		}
 		if (Menu == "Settings")
-			while (Button != 49 || Button != 50 || Button != 27)
+			while (true)
 			{
 				Button = getch ();
 					if (Button == 50 || Button == 49 || Button == 27)
 						break;
 			}
-	system ("cls");
+		if (Menu == "Color_Settings")
+			while (true)
+			{
+				Button = getch ();
+					if ((Button >= 49 && Button <= 55) || (Button == 27))
+						break;
+			}
+		if (Menu == "Background_Settings")
+			while (true)
+			{
+				Button = getch ();
+					if ((Button >= 48 && Button <= 55) || (Button == 27))
+						break;
+			}
 	return Button;
 }
-void TextInColor (std::string ColorName, std::string Text)
+void CoutCenterNameColor (std::string Stroke, unsigned short int ColorNumber)
 {
-		if (ColorName == "Green")
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 10));
-		if (ColorName == "Red")
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 12));
-		if (ColorName == "Yellow")
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 14));
-	std::cout << Text;
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 11));
-} // Функция изменения цвета текста.
+	std::cout << "        					   ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((ColorNumber << 4) | 7));
+    std::cout << Stroke;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 7));
+}
 int main ()
 {
-	char Button = 0;
-	
+	unsigned short int Button = 0, ColorNumber = 11, BackgroundColorNumber = 0;
+	char NickName [12] = {' ',' ',' ',' ',' ',' ',' ',' ',' ', ' '}; // Этот массив нужен для того, чтобы не производить проверки на длину введенного никнейма, вся строка автоматически обрежется под эти 12 символов
 	ConfigureConsoleWindow ();
 	while (true)
 	{
-		long int currTime   = clock() / CLK_TCK;
-		if (currTime == 1)
-			break;
+		cls ();
 		Center ("██████████████████████████████████████████████\n");
 		Center ("█────███────██───███████────██─██─██────██───█\n");
 		Center ("█─██──██─██─██─█████████─██─██─██─██─██─███─██\n");
@@ -91,17 +103,27 @@ int main ()
 		Button = Getch ("MainMenu");	
 			if (Button == 49) // chat
 			{
-				//введите ник
-			}
+				cls ();
+				Center ("██████████████████████████████████████████████████████████████████\n");
+				Center ("█────██────███───██────██────██─██─██───██────██─██─███─██─██────█\n");
+				Center ("█─██─██─██──███─███─██─██─██─██─██─████─██─██─██─██─███─██─██─██─█\n");
+				Center ("█────██────████─███─██─██────██─█──██───██────██─██─███─█──██────█\n");
+				Center ("█─██─██─██──███─███─██─██─█████──█─████─██─██─██─██─███──█─███─█─█\n");
+				Center ("█─██─██────████─███────██─█████─██─██───██─██─██─────██─██─███─█─█\n");
+				Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
+				Center ("Введите свой никнейм: ");
+				std::cin >> NickName;
+			} // конец меню с чатом
 			if (Button == 50) // setings
 			{
+				cls ();
 				Center ("█████████████████████████████████████──██████████████\n");
 				Center ("█─██─██────██────██───██────██────██─██─██─██─██─██─█\n");
 				Center ("█─██─██─██─██─██─███─███─██─██─██─██─██─██─█─███─██─█\n");
 				Center ("█────██────██─██████─███────██─██─██─█──██──████─█──█\n");
 				Center ("█─██─██─██─██─██─███─███─█████─██─██──█─██─█─███──█─█\n");
 				Center ("█─██─██─██─██────███─███─█████────██─██─██─██─██─██─█\n");
-				Center ("█████████████████████████████████████████████████████\n\n");
+				Center (" █████████████████████████████████████████████████████\n\n");
 				Center ("__________________________________\n");
 				Center ("|            Меню настроек       |\n");
 				Center ("|                                |\n");
@@ -111,15 +133,76 @@ int main ()
 				Center ("| 2. Цвет заднего фона           |\n");
 				Center ("|--------------------------------|\n");
 				Center ("| Esc. Вернуться в меню          |\n");
-				Center ("|________________________________|\n\n");
+				Center (" |________________________________|\n\n");
 				Button = Getch ("Settings");
-					if (Button == 50)
+					if (Button == 49) // настройки цвета символов
 					{
-						Center ("1. ");
-						TextInColor ("Green", "Зеленый");
-						TextInColor ("Red", "    2. Красный \n");
-						system ("pause");
-					}
-			}
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 9));
+						Center ("1. Синий\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 10));
+						Center ("2. Зеленый\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 11));
+						Center ("3. Голубой\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 12));
+						Center ("4. Красный\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 13));
+						Center ("5. Лиловый\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 14));
+						Center ("6. Желтый\n");
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((0 << 4) | 15));
+						Center ("7. Белый\n");
+						Button = Getch ("Color_Settings");
+							switch (Button)
+							{
+								case 49: ColorNumber = 9;
+								break;
+								case 50: ColorNumber = 10;
+								break;
+								case 51: ColorNumber = 11;
+								break;
+								case 52: ColorNumber = 12;
+								break;
+								case 53: ColorNumber = 13;
+								break;
+								case 54: ColorNumber = 14;
+								break;
+								case 55: ColorNumber = 15;
+								break;
+							}
+						Button = 0;
+					} // Конец настроек цвета символа
+					if (Button == 50) // настройки заднего фона
+					{
+						CoutCenterNameColor("0. Черный \n",11);
+						CoutCenterNameColor("1. Светло-синий\n",9);
+						CoutCenterNameColor("2. Светло-зеленый\n",10);
+						CoutCenterNameColor("3. Светло-голубой\n",11);
+						CoutCenterNameColor("4. Светло-красный\n",12);
+						CoutCenterNameColor("5. Светло-лиловый\n",13);
+						CoutCenterNameColor("6. Светло-желтый\n",14);	
+						CoutCenterNameColor("7. Ярко - белый\n",15);
+						Button = Getch ("Background_Settings");
+							switch (Button)
+							{
+								case 48: BackgroundColorNumber = 0;
+								break;
+								case 49: BackgroundColorNumber = 9;
+								break;
+								case 50: BackgroundColorNumber = 10;
+								break;
+								case 51: BackgroundColorNumber = 11;
+								break;
+								case 52: BackgroundColorNumber = 12;
+								break;
+								case 53: BackgroundColorNumber = 13;
+								break;
+								case 54: BackgroundColorNumber = 14;
+								break;
+								case 55: BackgroundColorNumber = 15;
+								break;
+							}
+					} // Конец настроек цвета заднего фона
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((BackgroundColorNumber << 4) | ColorNumber));
+			} // конец меню с настройками
 	}
 }
