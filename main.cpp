@@ -6,7 +6,6 @@
 #include <string.h>
 #include <sstream>
 #include <locale.h>
-//setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 void ConfigureConsoleWindow (bool Choise)
 {
     void* handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -14,7 +13,6 @@ void ConfigureConsoleWindow (bool Choise)
 	GetConsoleCursorInfo(handle,&structCursorInfo);
 	structCursorInfo.bVisible = Choise;
 	SetConsoleCursorInfo( handle, &structCursorInfo ); // Отключение каретки.
-	setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 } // Функция для настройки консольного окна.
 
 void Center (std::string Stroke)
@@ -86,7 +84,6 @@ void CoutCenterNameColor (std::string Stroke, unsigned short int ColorNumber)
 }
 int main ()
 {
-	setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 	unsigned short int Button = 0, ColorNumber = 11, BackgroundColorNumber = 0;
 	char NickName [12] = {' ',' ',' ',' ',' ',' ',' ',' ',' ', ' '}; // Этот массив нужен для того, чтобы не производить проверки на длину введенного никнейма, вся строка автоматически обрежется под эти 12 символов
 	std::string Message, word;
