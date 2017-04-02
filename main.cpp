@@ -4,6 +4,9 @@
 #include <fstream>
 #include <time.h>
 #include <string.h>
+#include <sstream>
+#include <locale.h>
+//setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 void ConfigureConsoleWindow (bool Choise)
 {
     void* handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -11,6 +14,7 @@ void ConfigureConsoleWindow (bool Choise)
 	GetConsoleCursorInfo(handle,&structCursorInfo);
 	structCursorInfo.bVisible = Choise;
 	SetConsoleCursorInfo( handle, &structCursorInfo ); // Отключение каретки.
+	setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 } // Функция для настройки консольного окна.
 
 void Center (std::string Stroke)
@@ -69,7 +73,8 @@ char Getch (std::string Menu)
 				Button = getch ();
 					if (Button == 9)
 						break;
-			}	
+			}
+
 	return Button;
 }
 void CoutCenterNameColor (std::string Stroke, unsigned short int ColorNumber)
@@ -81,11 +86,13 @@ void CoutCenterNameColor (std::string Stroke, unsigned short int ColorNumber)
 }
 int main ()
 {
+	setlocale (LC_CTYPE, "Russian"); // Русская кодировка текста.
 	unsigned short int Button = 0, ColorNumber = 11, BackgroundColorNumber = 0;
 	char NickName [12] = {' ',' ',' ',' ',' ',' ',' ',' ',' ', ' '}; // Этот массив нужен для того, чтобы не производить проверки на длину введенного никнейма, вся строка автоматически обрежется под эти 12 символов
-	std::string Message;
+	std::string Message, word;
 	system ("color B"); // Светло-голубой цвет текста.
 	system ("title chat_user_1"); // Заголовок программы.
+	system("mode con cols=126 lines=31"); // Отключение боковой меню с
 	ConfigureConsoleWindow (false);
 	while (true)
 	{
@@ -109,7 +116,8 @@ int main ()
 		Center ("|--------------------------------|\n");
 		Center ("| Esc. Выйти из программы        |\n");
 		Center ("|________________________________|\n");
-		Button = Getch ("MainMenu");	
+
+		Button = Getch ("MainMenu");
 			if (Button == 49) // chat
 			{
 				cls ();
@@ -123,19 +131,65 @@ int main ()
 				Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
 				Center ("Введите свой никнейм: ");
 				std::cin >> NickName;
-				/*std::ofstream Write ("E:\\Project\\UserMassagesOne.txt");
-				Write >> "";
-				Write.close ();*/ //очистка файла с сообщениями первого клиента
+				std::ofstream Write ("m\\first.txt");
+				Write << "";
+				Write.close ();
 				cls ();
-				Center ("Добро пожаловать в чат, ");
-					for (unsigned short int i = 0; i < 12; i++)
-						std::cout << NickName[i];
-				std::cout << "\n\n";
+				Center ("█████████████████████████████████████████████████████████████████████████████\n");
+				Center ("█─███─██───██─████────██────██─███──█████───██────█████────██─██─██────██───█\n");
+				Center ("█─███─██─████─████─██─██─██─██──█───██████─███─██─█████─██─██─██─██─██─███─██\n");
+				Center ("█─█─█─██───██─████─█████─██─██─█─█──██████─███─██─█████─█████────██────███─██\n");
+				Center ("█─────██─████─████─██─██─██─██─███──██████─███─██─█████─██─██─██─██─██─███─██\n");
+				Center ("██─█─███───██───██────██────██─███──██████─███────█████────██─██─██─██─███─██\n");
+				Center ("  ███████████████████████████████████████████████████████████████████████████\n\n\n");
+				//T - 165, 133, 166, 84
+				Button = 13;
+				unsigned short int Size2 = 0, Size3 = 0, LastSize2 = 0, LastSize3 = 0;
+
 					while (true)
-					{ 
-						getline(std::cin, Message);
+					{
 						std::cout << "\n";
-						std::cout << NickName << ": ";
+							if (Button == 13) // режим ввода сообщений
+							{
+									while (true)
+									{
+										getline(std::cin, Message);
+										std::cout << "\n";
+										std::cout << NickName << ": ";
+											if (Message.length() > 0)
+												break;
+									}
+								std::cout << "\n";
+								Button = 165;
+							}
+							if (Button == 165 || Button == 133 || Button == 166 || Button == 84) // режим чтения сообщений
+							{
+								//while (true)
+								//{
+									//{ // начало считывания сообщений второго пользователя
+										std::ifstream Read ("m\\second.txt");
+											while (std::getline (Read, word))
+											{
+												std::istringstream stream (word); // запись одной строки в переменную word
+												Size2++;
+											} // считываем нынешнее количество строчек в файле у второго пользователя
+										Read.close ();
+											if (Size2 > LastSize2)
+											{
+												Size2 = 0;
+												std::ifstream Read ("m\\second.txt");
+													while (std::getline (Read, word))
+													{
+														std::istringstream stream (word); // запись одной строки в переменную word
+														Size2++;
+															if (Size2 > LastSize2)
+																std::cout << word << "\n"; // выводим целую новую строчку
+													}
+												Read.close ();
+											}
+									//} // конец считывания сообщений второго пользователя
+								//}
+							}
 					}
 				std::cout << "\n";
 				system ("pause");
@@ -214,7 +268,7 @@ int main ()
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((BackgroundColorNumber << 4) | ColorNumber));
 							CoutCenterNameColor("5. Светло-лиловый\n",13);
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((BackgroundColorNumber << 4) | ColorNumber));
-							CoutCenterNameColor("6. Светло-желтый\n",14);	
+							CoutCenterNameColor("6. Светло-желтый\n",14);
 							SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((BackgroundColorNumber << 4) | ColorNumber));
 							CoutCenterNameColor("7. Ярко - белый\n",15);
 							Button = Getch ("Background_Settings");
@@ -240,7 +294,7 @@ int main ()
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)((BackgroundColorNumber << 4) | ColorNumber));
 				}
 			} // конец меню с настройками
-			
+
 			if (Button == 51) // setings
 			{
 				cls ();
@@ -251,20 +305,26 @@ int main ()
 				Center ("█─██─██─██─██─█████─██─██─██──██─█─███─██─█\n");
 				Center ("█────██─██─██─█████─██─██────███─██─██─██─█\n");
 				Center ("███████████████████████████████████████████\n\n");
-				Center ("__________________________________\n");
-				Center ("|                                |\n");
-				Center ("|      Версия программы: 1.0     |\n");
-				Center ("|--------------------------------|\n");
-				Center ("|        Разработчики :          |\n");
-				Center ("|                                |\n");
-				Center ("| Betterthan_Drugs               |\n");
-				Center ("| DeDxM1shaz                     |\n");
-				Center ("|--------------------------------|\n");
-				Center ("| Программа работает в           |\n");
-				Center ("| локальной сети(Wi-Fi)          |\n");
-				Center ("|--------------------------------|\n");
-				Center ("| Tab. Вернуться в меню          |\n");
-				Center (" |________________________________|\n\n");
+				Center ("_________________________________________\n");
+				Center ("|                                        |\n");
+				Center ("|          Версия программы: 1.0         |\n");
+				Center ("|----------------------------------------|\n");
+				Center ("|          Разработчики :                |\n");
+				Center ("|                                        |\n");
+				Center ("| Betterthan_Drugs                       |\n");
+				Center ("| DeDxM1shaz                             |\n");
+				Center ("|----------------------------------------|\n");
+				Center ("| Программа работает в                   |\n");
+				Center ("| локальной сети(Wi-Fi).                 |\n");
+				Center ("| Разработана под Windows.               |\n");
+				Center ("|----------------------------------------|\n");
+				Center ("|     Функции для работы с чатом:        |\n");
+				Center ("|                                        |\n");
+				Center ("|Для начала ввода сообщения нажать Т.    |\n");
+				Center ("|После ввода сообщения нажмите Enter.    |\n");
+				Center ("|----------------------------------------|\n");
+				Center ("| Tab. Вернуться в меню                  |\n");
+				Center (" |________________________________________|\n\n");
 				Button = Getch ("Reference");
 		}
 	}
