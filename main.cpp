@@ -128,8 +128,8 @@ int main ()
 				Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
 				Center ("Введите свой никнейм: ");
 				std::cin >> NickName;
-				std::ofstream Write ("m\\first.txt");
-				Write << "";
+				std::ofstream Write ("sms\\first.txt");
+				Write << NickName << "\n";
 				Write.close ();
 				cls ();
 				Center ("█████████████████████████████████████████████████████████████████████████████\n");
@@ -141,8 +141,9 @@ int main ()
 				Center ("  ███████████████████████████████████████████████████████████████████████████\n\n\n");
 				//T - 165, 133, 166, 84
 				Button = 13;
-				unsigned short int Size2 = 0, Size3 = 0, LastSize2 = 0, LastSize3 = 0;
-
+				std::string SecNickName;
+				unsigned short int Size2 = 0, Size3 = 0, LastSize2 = 1, LastSize3 = 0;
+				bool SecondNickName = false, ThirdNickname = false;
 					while (true)
 					{
 						std::cout << "\n";
@@ -150,44 +151,61 @@ int main ()
 							{
 									while (true)
 									{
-										getline(std::cin, Message);
 										std::cout << "\n";
 										std::cout << NickName << ": ";
+										getline(std::cin, Message);
 											if (Message.length() > 0)
+											{
+												std::ofstream Write ("sms\\first.txt", std::ios::app);
+												Write << Message << "\n";
+												Write.close ();
 												break;
+											}
 									}
-								std::cout << "\n";
-								Button = 165;
+								Button = 0;
 							}
-							if (Button == 165 || Button == 133 || Button == 166 || Button == 84) // режим чтения сообщений
+							if (Button == 0) // режим чтения сообщений
 							{
 								//while (true)
 								//{
 									//{ // начало считывания сообщений второго пользователя
-										std::ifstream Read ("m\\second.txt");
+										std::ifstream Read ("sms\\second.txt");
 											while (std::getline (Read, word))
 											{
 												std::istringstream stream (word); // запись одной строки в переменную word
+													if (!SecondNickName)
+													{
+														SecNickName = word;
+														SecondNickName = true;
+													}
 												Size2++;
 											} // считываем нынешнее количество строчек в файле у второго пользователя
 										Read.close ();
 											if (Size2 > LastSize2)
 											{
 												Size2 = 0;
-												std::ifstream Read ("m\\second.txt");
+												std::ifstream Read ("sms\\second.txt");
 													while (std::getline (Read, word))
 													{
 														std::istringstream stream (word); // запись одной строки в переменную word
 														Size2++;
 															if (Size2 > LastSize2)
-																std::cout << word << "\n"; // выводим целую новую строчку
+																std::cout << SecNickName << ": " << word << "\n"; // выводим целую новую строчку
 													}
 												Read.close ();
 											}
 									//} // конец считывания сообщений второго пользователя
 								//}
+								LastSize2 = Size2;
+								Size2 = 0;
 							}
-					}
+							while (true)
+							{
+								Button = getch ();
+									if (Button == 0 || Button == 13)
+										break;
+							}
+					} // окончание жизненного цикла сообщений
 				std::cout << "\n";
 				system ("pause");
 			} // конец меню с чатом
