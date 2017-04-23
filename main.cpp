@@ -85,7 +85,7 @@ void CoutCenterNameColor (std::string Stroke, unsigned short int ColorNumber)
 int main ()
 {
 	unsigned short int Button = 0, ColorNumber = 11, BackgroundColorNumber = 0;
-	char NickName [12] = {' ',' ',' ',' ',' ',' ',' ',' ',' ', ' '}; // Этот массив нужен для того, чтобы не производить проверки на длину введенного никнейма, вся строка автоматически обрежется под эти 12 символов
+	std::string NickName;
 	std::string Message, word;
 	system ("color B"); // Светло-голубой цвет текста.
 	system ("title chat_user_1"); // Заголовок программы.
@@ -127,7 +127,14 @@ int main ()
 				Center ("█─██─██────████─███────██─█████─██─██───██─██─██─────██─██─███─█─█\n");
 				Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
 				Center ("Введите свой никнейм: ");
-				std::cin >> NickName;
+				getline(std::cin, NickName);
+					if (NickName.length() > 12)
+					{
+						std::string UserNick = NickName;
+						NickName = "";
+							for (unsigned short int i = 0; i < 12; i++)
+								NickName = NickName + UserNick[i];
+					} // ограничение на никнейм в 12 символов
 				std::ofstream Write ("sms\\first.txt");
 				Write << NickName << "\n";
 				Write.close ();
@@ -142,8 +149,8 @@ int main ()
 				//T - 165, 133, 166, 84
 				Button = 13;
 				std::string SecNickName;
-				unsigned short int Size2 = 0, Size3 = 0, LastSize2 = 1, LastSize3 = 0;
-				bool SecondNickName = false, ThirdNickname = false;
+				unsigned short int Size2 = 0, LastSize2 = 1;
+				bool SecondNickName = false;
 					while (true)
 					{
 						std::cout << "\n";
