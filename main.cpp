@@ -2,10 +2,8 @@
 #include <windows.h>
 #include <conio.h>
 #include <fstream>
-#include <time.h>
 #include <string.h>
 #include <sstream>
-#include <locale.h>
 void ConfigureConsoleWindow (bool Choise)
 {
     void* handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -89,7 +87,7 @@ int main ()
 	std::string Message, word;
 	system ("color B"); // Светло-голубой цвет текста.
 	system ("title chat_user_1"); // Заголовок программы.
-	system("mode con cols=126 lines=31"); // Отключение боковой меню с
+	system("mode con cols=126 lines=31"); // Отключение боковой меню с кареткой
 	ConfigureConsoleWindow (false);
 	while (true)
 	{
@@ -113,21 +111,23 @@ int main ()
 		Center ("|--------------------------------|\n");
 		Center ("| Esc. Выйти из программы        |\n");
 		Center ("|________________________________|\n");
-
 		Button = Getch ("MainMenu");
 			if (Button == 49) // chat
 			{
-				cls ();
 				ConfigureConsoleWindow (true);
-				Center ("██████████████████████████████████████████████████████████████████\n");
-				Center ("█────██────███───██────██────██─██─██───██────██─██─███─██─██────█\n");
-				Center ("█─██─██─██──███─███─██─██─██─██─██─████─██─██─██─██─███─██─██─██─█\n");
-				Center ("█────██────████─███─██─██────██─█──██───██────██─██─███─█──██────█\n");
-				Center ("█─██─██─██──███─███─██─██─█████──█─████─██─██─██─██─███──█─███─█─█\n");
-				Center ("█─██─██────████─███────██─█████─██─██───██─██─██─────██─██─███─█─█\n");
-				Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
-				Center ("Введите свой никнейм: ");
-				getline(std::cin, NickName);
+					while (NickName.length() == 0)
+					{
+						cls ();
+						Center ("██████████████████████████████████████████████████████████████████\n");
+						Center ("█────██────███───██────██────██─██─██───██────██─██─███─██─██────█\n");
+						Center ("█─██─██─██──███─███─██─██─██─██─██─████─██─██─██─██─███─██─██─██─█\n");
+						Center ("█────██────████─███─██─██────██─█──██───██────██─██─███─█──██────█\n");
+						Center ("█─██─██─██──███─███─██─██─█████──█─████─██─██─██─██─███──█─███─█─█\n");
+						Center ("█─██─██────████─███────██─█████─██─██───██─██─██─────██─██─███─█─█\n");
+						Center ("   ██████████████████████████████████████████████████████████████████\n\n\n\n");
+						Center ("Введите свой никнейм: ");
+						getline(std::cin, NickName);
+					}
 					if (NickName.length() > 12)
 					{
 						std::string UserNick = NickName;
@@ -148,12 +148,14 @@ int main ()
 				Center ("  ███████████████████████████████████████████████████████████████████████████\n\n\n");
 				//T - 165, 133, 166, 84
 				Button = 13;
-				std::string SecNickName;
-				unsigned short int Size2 = 0, LastSize2 = 1;
-				bool SecondNickName = false;
+				std::string SecondUser_NickName;
+				std::string ThirdUser_NickName;
+				unsigned short int SecondUser_NewVolume = 0, SecondUser_LastVolume = 1;
+				unsigned short int ThirdUser_NewVolume = 0, ThirdUser_LastVolume = 1;
+				bool Get_SecondUserNickName = false;
+				bool Get_ThirdUserNickName = false;
 					while (true)
 					{
-						std::cout << "\n";
 							if (Button == 13) // режим ввода сообщений
 							{
 									while (true)
@@ -173,48 +175,81 @@ int main ()
 							}
 							if (Button == 0) // режим чтения сообщений
 							{
-								//while (true)
-								//{
-									//{ // начало считывания сообщений второго пользователя
+									// начало считывания сообщений второго пользователя
 										std::ifstream Read ("sms\\second.txt");
 											while (std::getline (Read, word))
 											{
 												std::istringstream stream (word); // запись одной строки в переменную word
-													if (!SecondNickName)
+													if (!Get_SecondUserNickName)
 													{
-														SecNickName = word;
-														SecondNickName = true;
+														SecondUser_NickName = word;
+														Get_SecondUserNickName = true;
 													}
-												Size2++;
+												SecondUser_NewVolume++;
 											} // считываем нынешнее количество строчек в файле у второго пользователя
 										Read.close ();
-											if (Size2 > LastSize2)
+											if (SecondUser_NewVolume > SecondUser_LastVolume)
 											{
-												Size2 = 0;
+												SecondUser_NewVolume = 0;
 												std::ifstream Read ("sms\\second.txt");
 													while (std::getline (Read, word))
 													{
 														std::istringstream stream (word); // запись одной строки в переменную word
-														Size2++;
-															if (Size2 > LastSize2)
-																std::cout << SecNickName << ": " << word << "\n"; // выводим целую новую строчку
+														SecondUser_NewVolume++;
+															if (SecondUser_NewVolume > SecondUser_LastVolume)
+																std::cout << SecondUser_NickName << ": " << word << "\n"; // выводим целую новую строчку
 													}
 												Read.close ();
 											}
-									//} // конец считывания сообщений второго пользователя
-								//}
-								LastSize2 = Size2;
-								Size2 = 0;
+										SecondUser_LastVolume = SecondUser_NewVolume;
+										SecondUser_NewVolume = 0;
+								 // конец считывания сообщений второго пользователя
+								 
+								 // начало считывания сообщений третьего пользователя
+									{
+										std::ifstream Read ("sms\\third.txt");
+												while (std::getline (Read, word))
+												{
+													std::istringstream stream (word); // запись одной строки в переменную word
+														if (!Get_ThirdUserNickName)
+														{
+															ThirdUser_NickName = word;
+															Get_ThirdUserNickName = true;
+														}
+													ThirdUser_NewVolume++;
+												} // считываем нынешнее количество строчек в файле у второго пользователя
+											Read.close ();
+									}
+												if (ThirdUser_NewVolume > ThirdUser_LastVolume)
+												{
+													ThirdUser_NewVolume = 0;
+													std::ifstream Read ("sms\\third.txt");
+														while (std::getline (Read, word))
+														{
+															std::istringstream stream (word); // запись одной строки в переменную word
+															ThirdUser_NewVolume++;
+																if (ThirdUser_NewVolume > ThirdUser_LastVolume)
+																	std::cout << ThirdUser_NickName << ": " << word << "\n"; // выводим целую новую строчку
+														}
+													Read.close ();
+												}
+											ThirdUser_LastVolume = ThirdUser_NewVolume;
+											ThirdUser_NewVolume = 0;
+								 
+								 // конец считывания сообщений второго пользователя
 							}
 							while (true)
 							{
 								Button = getch ();
-									if (Button == 0 || Button == 13)
+									if (Button == 0 || Button == 13 || Button == 27)
 										break;
 							}
+							if (Button == 27)
+							{
+								ConfigureConsoleWindow (false);
+								break;
+							}
 					} // окончание жизненного цикла сообщений
-				std::cout << "\n";
-				system ("pause");
 			} // конец меню с чатом
 			if (Button == 50) // setings
 			{
@@ -334,7 +369,7 @@ int main ()
 				Center ("|          Разработчики :                |\n");
 				Center ("|                                        |\n");
 				Center ("| Betterthan_Drugs                       |\n");
-				Center ("| DeDxM1shaz                             |\n");
+				Center ("| DeDxM1shaz  (P.S. с тебя картофан)     |\n");
 				Center ("|----------------------------------------|\n");
 				Center ("| Программа работает в                   |\n");
 				Center ("| локальной сети(Wi-Fi).                 |\n");
